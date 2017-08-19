@@ -54,13 +54,13 @@
         android:id="@+id/gifTextView2" />
 
     <ImageView
-        android:id="@+id/settings"
+        android:id="@+id/audio"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/settings"
         android:layout_below="@+id/tv_days"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp" />
+        android:layout_marginTop="20dp"
+        app:srcCompat="@drawable/ic_volume_up_grey_700_24dp" />
 
 
 </RelativeLayout>

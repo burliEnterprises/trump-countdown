@@ -31,9 +31,12 @@ public class MainActivity extends AppCompatActivity {
     TextView tv_number, tv_days;
     AlphaAnimation blinkanimation;
     ImageView iv_trump;
-    int counter;
+    int counter, audio;
     boolean addieren;
     RelativeLayout main;
+    MediaPlayer mp;
+    ImageView iv_audio;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -44,34 +47,51 @@ public class MainActivity extends AppCompatActivity {
         tv_number = (TextView) findViewById(R.id.tv_number);
         tv_days = (TextView) findViewById(R.id.tv_days);
         main = (RelativeLayout) findViewById(R.id.activity_main);
-
-        // activity & fragment handling:
-        ImageView settings = (ImageView) findViewById(R.id.settings);
-        settings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //startActivity(new Intent(MainActivity.this, SettingsActivity.class));
-            }
-        });
+        iv_audio = (ImageView) findViewById(R.id.audio);
 
         // shared preferences loading:
         SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
         final SharedPreferences.Editor editor = pref.edit();
         counter = pref.getInt("counter", 3); // getting Integer
+        audio = pref.getInt("audio", 1);    // eingeschalten 1, aus 0
         Log.d("count", String.valueOf(counter));
 
-
         // set sounds and audio:
-        final MediaPlayer mp = new MediaPlayer();
+        mp = new MediaPlayer();
         try {
             //you can change the path, here path is external directory(e.g. sdcard) /Music/maine.mp3
             AssetFileDescriptor afd = getAssets().openFd("trumpsong.mp3");
             mp.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
             mp.prepare();
-            mp.start();
+            if (audio == 1) {
+                mp.start();
+            } else {
+                iv_audio.setImageDrawable(getResources().getDrawable(R.drawable.ic_volume_off_grey_700_24dp));
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        // activity & fragment handling:
+        iv_audio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+                SharedPreferences tmp_pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
+                audio = tmp_pref.getInt("audio", 1);    // eingeschalten 1, aus 0
+                if (audio == 1) {
+                    editor.putInt("audio", 0); // Storing integer
+                    editor.commit(); // commit changes
+                    iv_audio.setImageDrawable(getResources().getDrawable(R.drawable.ic_volume_off_grey_700_24dp));
+                    mp.pause();
+                } else {
+                    editor.putInt("audio", 1); // Storing integer
+                    editor.commit(); // commit changes
+                    iv_audio.setImageDrawable(getResources().getDrawable(R.drawable.ic_volume_up_grey_700_24dp));
+                    mp.start();
+                }
+            }
+        });
 
         // set typefaces:
         Typeface face = Typeface.createFromAsset(getAssets(), "manteka.ttf");
