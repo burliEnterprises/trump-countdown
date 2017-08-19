@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
 
     TextView tv_number, tv_days;
     AlphaAnimation blinkanimation;
-    ImageView iv_trump;
+    ImageView iv_trump, iv_share;
     int counter, audio;
     boolean addieren;
     RelativeLayout main;
@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
         tv_days = (TextView) findViewById(R.id.tv_days);
         main = (RelativeLayout) findViewById(R.id.activity_main);
         iv_audio = (ImageView) findViewById(R.id.audio);
+        iv_share = (ImageView) findViewById(R.id.share);
 
         // shared preferences loading:
         SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
@@ -90,6 +91,17 @@ public class MainActivity extends AppCompatActivity {
                     iv_audio.setImageDrawable(getResources().getDrawable(R.drawable.ic_volume_up_grey_700_24dp));
                     mp.start();
                 }
+            }
+        });
+
+        iv_share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, tv_number.getText().toString() + " days of trump's term are left.");
+                sendIntent.setType("text/plain");
+                startActivity(sendIntent);
             }
         });
 
