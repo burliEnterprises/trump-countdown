@@ -10,7 +10,7 @@
     android:paddingRight="16dp"
 
     tools:context="biz.burli.trump.MainActivity"
-    android:background="#F2F2F2">
+    android:background="#fff">
 
 
     <TextView
@@ -41,12 +41,26 @@
         android:layout_below="@+id/tv_number"
         android:layout_centerHorizontal="true" />
 
-    <ImageView
-        android:layout_width="300dp"
+    <pl.droidsonroids.gif.GifTextView
+        android:layout_width="400dp"
         android:layout_height="300dp"
-        app:srcCompat="@drawable/trumpflag2"
-        android:id="@+id/iv_flag"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentStart="true"
+        android:background="@drawable/inaug"
+        android:gravity="center"
+        android:id="@+id/gifTextView2" />
+
+    <ImageView
+        android:id="@+id/settings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/settings"
+        android:layout_below="@+id/tv_days"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp" />
+
 
 </RelativeLayout>

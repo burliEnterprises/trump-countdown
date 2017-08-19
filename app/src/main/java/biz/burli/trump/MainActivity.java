@@ -1,6 +1,7 @@
 package biz.burli.trump;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Typeface;
@@ -13,10 +14,14 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.fujiyuu75.sequent.Sequent;
 
 import java.util.Date;
 
@@ -28,30 +33,35 @@ public class MainActivity extends AppCompatActivity {
     ImageView iv_trump;
     int counter;
     boolean addieren;
-
+    RelativeLayout main;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // get views and elements:
         tv_number = (TextView) findViewById(R.id.tv_number);
         tv_days = (TextView) findViewById(R.id.tv_days);
-        iv_trump = (ImageView) findViewById(R.id.iv_flag);
+        main = (RelativeLayout) findViewById(R.id.activity_main);
 
+        // activity & fragment handling:
+        ImageView settings = (ImageView) findViewById(R.id.settings);
+        settings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+            }
+        });
+
+        // shared preferences loading:
         SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
         final SharedPreferences.Editor editor = pref.edit();
-
-
         counter = pref.getInt("counter", 3); // getting Integer
         Log.d("count", String.valueOf(counter));
 
-        blinkanimation = new AlphaAnimation(1, 0); // Change alpha from fully visible to invisible
-        blinkanimation.setDuration(500); // duration
-        blinkanimation.setInterpolator(new LinearInterpolator()); // do not alter animation rate
-        blinkanimation.setRepeatCount(100000); // Repeat animation infinitely
-        blinkanimation.setRepeatMode(Animation.REVERSE);
 
+        // set sounds and audio:
         final MediaPlayer mp = new MediaPlayer();
         try {
             //you can change the path, here path is external directory(e.g. sdcard) /Music/maine.mp3
@@ -63,10 +73,12 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        // set typefaces:
         Typeface face = Typeface.createFromAsset(getAssets(), "manteka.ttf");
         tv_number.setTypeface(face);
         tv_days.setTypeface(face);
 
+        // calculate days till end:
         Date currentDate = new Date(System.currentTimeMillis());
         Date endDate = new Date();
         endDate.setYear(121);   // von 1900 gerechnet
@@ -90,19 +102,21 @@ public class MainActivity extends AppCompatActivity {
             // kein vertrauen
         };
 
+
+        // set animations:
+        blinkanimation = new AlphaAnimation(1, 0); // Change alpha from fully visible to invisible
+        blinkanimation.setDuration(500); // duration
+        blinkanimation.setInterpolator(new LinearInterpolator()); // do not alter animation rate
+        blinkanimation.setRepeatCount(100000); // Repeat animation infinitely
+        blinkanimation.setRepeatMode(Animation.REVERSE);
         tv_number.setAnimation(blinkanimation);
-        iv_trump.setImageDrawable(getResources().getDrawable(R.drawable.blink));
+        Sequent
+                .origin(main)
+                .duration(1000) // option.
+                .start();
 
-        AnimationDrawable animation = new AnimationDrawable();
-        animation.addFrame(getResources().getDrawable(R.drawable.trumpflag2), 500);
-        animation.addFrame(getResources().getDrawable(R.drawable.trumpflag2silent), 500);
-        animation.setOneShot(false);
 
-        iv_trump.setBackgroundDrawable(animation);
-
-        // start the animation!
-        animation.start();
-
+        // dialog for second run or not:
         final Dialog dialog = new Dialog(this);
         if (counter == 3) {
             counter = 1;
